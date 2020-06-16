@@ -19,7 +19,7 @@ func TestGetProducts(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, products, nbEntries)
 
-	// Use the vulnerable function to also retrieve users
+	// Now leverage the vulnerability to also retrieve users
 	products, err = vulnerable.GetProducts(context.Background(), db, "sneaker' UNION SELECT * FROM user WHERE ''='")
 	require.NoError(t, err)
 	require.True(t, len(products) > nbEntries)
