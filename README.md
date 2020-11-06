@@ -1,0 +1,73 @@
+<p align="center">
+<img width="30%" src="doc/images/sqreen-gopher.png" alt="Sqreen for Go" title="Sqreen for Go" />
+</p>
+
+# [Sqreen](https://www.sqreen.com/)'s Go Damn Vulnerable Web App
+
+This Go web server is a vulnerable application demonstration, protected by
+Sqreen.
+
+It currently includes the following vulnerabilities:
+
+- [x] SQL injection: `/products` accepts a URL-query parameter `category` that
+  is injected into the SQL query (eg. `/products?category=something%20OR%201=1`)
+  .
+- [ ] Shell injection
+- [ ] Local File Inclusion
+
+The web app comes with Sqreen for Go which can be enabled by running a valid
+Sqreen configuration that can be obtained at <https://my.sqreen.com/>. Once
+enabled, the agent should protect the application according to the application
+security configuration you enabled.
+
+<p align="center">
+<img width="60%" src="./doc/images/blocking-page-with-gopher.png" alt="Sqreen for Go" title="Sqreen for Go" />
+</p>
+
+## Compiling the web app
+
+### With docker builder
+
+The simplest way to build this repository is by using the latest docker builder
+which can take a git repository source. Simply run the following command to
+build the latest `go-dvwa` docker image of this repository:
+
+```console
+$ docker builder build github.com/sqreen/go-dvwa.git
+```
+
+Once built, you can simply run the image and pass the Sqreen configuration to
+the container via environment variables:
+
+```console
+$ docker run -e SQREEN_TOKEN=<token> -e SQREEN_APP_NAME="Go DVWA" -p 8080:8080 go-dvwa
+```
+
+The Go web application is now running and you can access it
+at <http://127.0.0.1:8080/>.
+
+### From sources
+
+Clone the repository and use the Makefile:
+
+```console
+$ make
+```
+
+Once compiled, you can execute the binary file `dvwa`. Sqreen's agent
+configuration can then be passed by file or environment variable.
+
+```console
+$ ./dvwa
+```
+
+The Go web application is now running and you can access it
+at <http://127.0.0.1:8080/>.
+
+Note that the docker image can be also built using the Makefile:
+
+```console
+$ make image
+```
+
+Cf. the previous docker image instructions to read how to start the container.
