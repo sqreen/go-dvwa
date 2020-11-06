@@ -1,26 +1,18 @@
-name: Publish Docker image
+name: ci
 
 on:
   push:
     branches: master
 
 jobs:
-  push_to_registry:
-    name: Push Docker image to GitHub Packages
+  main:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v2
-
-      - name: Push to GitHub Packages
+      - name: Build and push
         id: docker_build
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v2
         with:
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
-          repository: sqreen/go-dvwa/go-dvwa:latest
           push: true
-
+          tags: sqreen/go-dvwa:latest
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
