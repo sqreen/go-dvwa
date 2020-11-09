@@ -21,11 +21,10 @@ func main() {
 	templateDir := filepath.Join(filepath.Dir(bin), "template")
 
 	router := NewRouter(templateDir)
-	router.Use(sqhttp.Middleware)
 
 	addr := ":8080"
 	log.Println("Serving application on", addr)
-	err = http.ListenAndServe(addr, router)
+	err = http.ListenAndServe(addr, sqhttp.Middleware(router))
 	if err != nil {
 		log.Fatalln(err)
 	}
