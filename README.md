@@ -1,7 +1,3 @@
-<p align="center">
-<img width="30%" src="doc/images/sqreen-gopher.png" alt="Sqreen for Go" title="Sqreen for Go" />
-</p>
-
 # [Sqreen](https://www.sqreen.com/)'s Go Damn Vulnerable Web App
 
 This Go web server is a vulnerable application demonstration, protected by
@@ -20,11 +16,32 @@ Sqreen configuration that can be obtained at <https://my.sqreen.com/>. Once
 enabled, the agent should protect the application according to the application
 security configuration you enabled.
 
+## Quick Start
+
+The pre-compiled [go-dvwa](https://github.com/sqreen/go-dvwa/packages/494452)
+docker image can be used to simply run the web application. The HTTP server
+listens the TCP address `0.0.0.0:8080` so you can expose it with docker:
+
+```console
+$ docker run -it -p 8080:8080 go-dvwa
+```
+
+The vulnerable web app starts regardless of Sqreen's agent. It will start when
+having a valid configuration with Sqreen credentials you can get at
+<https://my.sqree.com/>. You can pass them using container's environment
+variables:
+
+```console
+$ docker run -it -p 8080:8080 -e SQREEN_TOKEN=<token> -e SQREEN_APP_NAME="Go DVWA" go-dvwa
+```
+
+The web app vulnerabilities should be now blocked by Sqreen :-)
+
 <p align="center">
 <img width="60%" src="./doc/images/blocking-page-with-gopher.png" alt="Sqreen for Go" title="Sqreen for Go" />
 </p>
 
-## Compiling the web app
+## Compile from sources
 
 ### With docker builder
 
