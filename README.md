@@ -8,8 +8,9 @@ It currently includes the following vulnerabilities:
 - [x] SQL injection: `/products` accepts a URL-query parameter `category` that
   is injected into the SQL query (eg. `/products?category=something%20OR%201=1`)
   .
-- [ ] Shell injection
-- [ ] Local File Inclusion
+- [x] Shell injection
+- [ ] NoSQL injection
+- [ ] Server-Side Request Forgery
 
 The web app comes with Sqreen for Go which can be enabled by running a valid
 Sqreen configuration that can be obtained at <https://my.sqreen.com/>. Once

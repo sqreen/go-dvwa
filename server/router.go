@@ -5,6 +5,7 @@
 package main
 
 import (
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
@@ -27,6 +28,7 @@ func NewRouter(templateDir string) *mux.Router {
 
 	r := mux.NewRouter()
 
+	// /products vulnerable to SQL injections
 	r.HandleFunc("/products", func(w http.ResponseWriter, r *http.Request) {
 		category := r.FormValue("category")
 		products, err := vulnerable.GetProducts(r.Context(), db, category)
@@ -37,6 +39,24 @@ func NewRouter(templateDir string) *mux.Router {
 		if err := t.Execute(w, products); err != nil {
 			log.Fatalln(err)
 		}
+	})
+
+	// /api/health vulnerable to shell injections
+	r.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
+		extra := r.FormValue("extra")
+		output, err := vulnerable.System(r.Context(), "ping -c1 sqreen.com"+extra)
+		if err != nil {
+			log.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		enc := json.NewEncoder(w)
+		enc.Encode(struct {
+			Output string
+		}{
+			Output: string(output),
+		})
 	})
 
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir(templateDir)))
