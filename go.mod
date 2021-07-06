@@ -3,7 +3,6 @@ module github.com/sqreen/go-dvwa
 go 1.13
 
 require (
-	github.com/google/go-cmp v0.4.1 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
 	github.com/gorilla/mux v1.7.4
@@ -18,7 +17,7 @@ require (
 	github.com/spf13/afero v1.2.2 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.7.0 // indirect
-	github.com/sqreen/go-agent v0.16.1
+	github.com/sqreen/go-agent v1.0.5
 	github.com/stretchr/testify v1.6.1
 	google.golang.org/protobuf v1.24.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
