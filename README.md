@@ -6,7 +6,7 @@ Sqreen.
 It currently includes the following vulnerabilities:
 
 - [x] SQL injection: `/products` accepts a URL-query parameter `category` that
-  is injected into the SQL query (eg. `/products?category=something%20OR%201=1`)
+  is injected into the SQL query (eg. `/products?category=all%27%20UNION%20SELECT%20*%20FROM%20user%27`)
   .
 - [x] Shell injection
 - [ ] NoSQL injection
