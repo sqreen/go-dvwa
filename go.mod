@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/google/gofuzz v1.1.0 // indirect
+	github.com/google/gofuzz v1.1.0 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
 	github.com/gorilla/mux v1.7.4
 	github.com/kentik/patricia v0.0.0-20200128193914-c35d94c5e02f // indirect
