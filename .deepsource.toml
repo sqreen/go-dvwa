@@ -1,0 +1,11 @@
+version = 1
+
+[[analyzers]]
+name = "go"
+
+  [analyzers.meta]
+  import_root = "github.com/rkreddypandu/go-dvwa"
+  dependencies_vendored = true
+
+[[transformers]]
+name = "gofmt"
