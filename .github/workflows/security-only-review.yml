@@ -1,0 +1,87 @@
+name: Security-Only PR Review (OpenAI GPT-5.4-mini)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  security-review:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get PR diff
+        id: diff
+        run: |
+          git diff --no-color origin/${{ github.base_ref }}...HEAD > diff.txt
+          echo "diff<<EOF" >> $GITHUB_ENV
+          cat diff.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Run Security-Only Review with GPT-5.4-mini
+        uses: actions/github-script@v7
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DIFF: ${{ env.diff }}
+        with:
+          script: |
+            const prompt = `You are a senior Application Security Engineer.
+            Your ONLY job is to analyze the code changes below and report security issues.
+
+            STRICT RULES:
+            - Report ONLY real security vulnerabilities (OWASP Top 10, CWE, injection, SSRF, auth bypass, broken access control, secrets leakage, logic flaws, data-flow issues, supply-chain risks, etc.).
+            - NEVER comment on code style, performance, tests, maintainability, or anything non-security.
+            - If no security issues are found, reply with exactly this one line: "✅ No security issues detected in this PR."
+
+            OUTPUT FORMAT (use this exact structure):
+
+            ## Security Review
+
+            **Summary**: X security issues found (or "No issues found")
+
+            ### Issues Found
+
+            | Severity | File | Line | Issue |
+            |----------|------|------|-------|
+            | 🔴 Critical | path/to/file.py | 42 | Short title of the issue |
+
+            **Details & Fix**:
+            - **Description**: Clear explanation of the risk and why it is dangerous.
+            - **Fix Suggestion**:
+            \`\`\`diff
+            - Insecure code here
+            + Secure code here
+            \`\`\`
+
+            Now analyze the following PR changes:
+
+            ${process.env.DIFF}`;
+
+            const response = await fetch("https://api.openai.com/v1/chat/completions", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+              },
+              body: JSON.stringify({
+                model: "gpt-5.4-mini",
+                messages: [{ role: "user", content: prompt }],
+                temperature: 0.0,
+                max_tokens: 4000
+              })
+            });
+
+            const data = await response.json();
+            const reviewText = data.choices[0].message.content;
+
+            // Post the clean security-only comment
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: reviewText
+            });
